@@ -13,6 +13,16 @@ EMPLOYEES = [
     }
 ]
 
+
 def get_all_employees():
+    """doc"""
     return EMPLOYEES
 
+
+def get_single_employee(id):
+    """gets a single employee"""
+    requested_employee = {}
+    for employee in EMPLOYEES:
+        if employee["id"] == id:
+            requested_employee = employee
+    return requested_employee
