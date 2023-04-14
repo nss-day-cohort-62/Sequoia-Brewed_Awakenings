@@ -8,7 +8,9 @@ from views import (
     get_all_orders,
     get_single_employee,
     get_single_order,
-    get_single_product
+    get_single_product,
+    create_order,
+    delete_order
 )
 
 
@@ -89,6 +91,20 @@ class HandleRequests(BaseHTTPRequestHandler):
 
     def do_POST(self):
         """Make a post request to the server"""
+        content_len = int(self.headers.get("content-length", 0))
+        post_body = self.rfile.read(content_len)
+        post_body = json.loads(post_body)
+        (resource, id) = self.parse_url(self.path)
+        new_order = None
+        if resource == "orders":
+            self._set_headers(201)
+            new_order = create_order(post_body)
+            self.wfile.write(json.dumps(new_order).encode())
+        else:
+            self._set_headers(400)
+            message = {"message": "not found"}
+            self.wfile.write(json.dumps(message).encode())
+
 
     def do_PUT(self):
         """Handles PUT requests to the server"""
@@ -96,6 +112,14 @@ class HandleRequests(BaseHTTPRequestHandler):
     def do_DELETE(self):
         """Handle DELETE Requests"""
 
+        (resource, id) = self.parse_url(self.path)
+
+        if resource == "orders": 
+            delete_order(id)
+            self._set_headers(204)
+            message = {"message": "order deleted"}
+            self.wfile.write(json.dumps(message).encode())
+            
 
 def main():
     """Starts the server on port 8088 using the HandleRequests class
