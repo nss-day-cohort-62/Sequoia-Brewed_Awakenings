@@ -25,3 +25,21 @@ def get_single_order(id):
         if order["id"] == id:
             requested_order = order
     return requested_order
+
+def create_order(order):
+    max_id = ORDERS[-1]["id"]
+    new_id = max_id + 1
+    order["id"] = new_id
+    ORDERS.append(order)
+    return order
+
+def delete_order(id):
+    order_index = -1
+
+    for index, order in enumerate(ORDERS):
+        if order["id"] == id:
+            order_index = index
+            
+    if order_index >= 0:
+        ORDERS.pop(order_index)
+
